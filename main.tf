@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 provider "aws" {
-  region = var.region
+  region = local.region
 }
 
 # Filter out local zones, which are not currently supported 
@@ -17,9 +17,15 @@ data "aws_availability_zones" "available" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  cluster_name             = "umatter-${random_string.suffix.result}"
-  name                     = "umatter"
+  region = "ap-northeast-2"
+  name   = "umatter"
+
+  k8s_version  = "1.28"
+  cluster_name = "umatter-${random_string.suffix.result}"
+
   db_username              = "umatter"
+  db_paasword              = var.db_password
+  db_port                  = 5432
   db_engine                = "postgres"
   db_engine_version        = "14"
   db_family                = "postgres14" # DB parameter group
@@ -30,7 +36,7 @@ locals {
 }
 
 resource "random_string" "suffix" {
-  length  = 8
+  length  = 5
   special = false
 }
 
@@ -66,16 +72,22 @@ module "vpc" {
 module "db" {
   source = "./db"
 
-  db_vpc_id                = module.vpc.vpc_id
-  db_name                  = local.name
-  db_instance_class        = local.db_instance_class
-  db_engine                = local.db_engine
-  db_engine_version        = local.db_engine_version
-  db_username              = local.db_username
+  db_name     = local.name
+  db_username = local.db_username
+  db_password = var.db_password
+
+  db_instance_class       = local.db_instance_class
+  db_engine               = local.db_engine
+  db_engine_version       = local.db_engine_version
+  db_major_engine_version = local.db_major_engine_version
+  db_family               = local.db_family
+
+  db_port    = local.db_port
+  db_vpc_id  = module.vpc.vpc_id
+  db_subnets = module.vpc.database_subnets
+
   db_allocated_storage     = local.db_allocated_storage
   db_max_allocated_storage = local.db_max_allocated_storage
-  db_major_engine_version  = local.db_major_engine_version
-  db_subnets               = module.vpc.database_subnets
 }
 
 module "eks" {
@@ -83,7 +95,7 @@ module "eks" {
   version = "19.15.3"
 
   cluster_name    = local.cluster_name
-  cluster_version = var.k8s_version
+  cluster_version = local.k8s_version
 
   iam_role_tags = {
     Name = local.cluster_name
@@ -98,8 +110,22 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
+    # default_node_group = {
+    #   # By default, the module creates a launch template to ensure tags are propagated to instances, etc.,
+    #   # so we need to disable it to use the default template provided by the AWS EKS managed node group service
+    #   use_custom_launch_template = false
+
+    #   disk_size = 50
+
+    #   # Remote access cannot be specified with a launch template
+    #   remote_access = {
+    #     ec2_ssh_key               = module.key_pair.key_pair_name
+    #     source_security_group_ids = [aws_security_group.remote_access.id]
+    #   }
+    # }
+
     one = {
-      name = "node-group-1"
+      name = "node-1"
 
       instance_types = ["t3.medium"]
 
@@ -108,45 +134,17 @@ module "eks" {
       desired_size = 1
     }
 
-    two = {
-      name = "node-group-2"
+    # two = {
+    #   name = "node-group-2"
 
-      instance_types = ["t3.medium"]
+    #   instance_types = ["t3.medium"]
 
-      min_size     = 1
-      max_size     = 3
-      desired_size = 1
-    }
+    #   min_size     = 1
+    #   max_size     = 3
+    #   desired_size = 1
+    # }
   }
 }
-
-# # https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/ 
-# data "aws_iam_policy" "ebs_csi_policy" {
-#   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-# }
-
-# module "irsa-ebs-csi" {
-#   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-#   version = "4.7.0"
-
-#   create_role                   = true
-#   role_name                     = "EKSTFEBSCSIRole-${module.eks.cluster_name}"
-#   provider_url                  = module.eks.oidc_provider
-#   role_policy_arns              = [data.aws_iam_policy.ebs_csi_policy.arn]
-#   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
-# }
-
-# resource "aws_eks_addon" "ebs-csi" {
-#   cluster_name             = module.eks.cluster_name
-#   addon_name               = "aws-ebs-csi-driver"
-#   addon_version            = var.ebs_csi_addon_version
-#   service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-
-#   tags = {
-#     "eks_addon" = "ebs-csi"
-#     "terraform" = "true"
-#   }
-# }
 
 module "iam_eks_role" {
   source                                 = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
@@ -211,7 +209,7 @@ resource "helm_release" "lb" {
 
   set {
     name  = "region"
-    value = var.region
+    value = local.region
   }
 
   set {

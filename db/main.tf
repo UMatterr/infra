@@ -8,26 +8,45 @@ resource "aws_db_instance" "master" {
   allocated_storage     = var.db_allocated_storage
   max_allocated_storage = var.db_max_allocated_storage
 
-  db_subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
-  vpc_security_group_ids  = [aws_security_group.rds.id]
-  parameter_group_name    = aws_db_parameter_group.db_pg.name
-  skip_final_snapshot     = true
-  publicly_accessible     = false
-  multi_az = true
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  parameter_group_name   = aws_db_parameter_group.db_pg.name
+
+  # maintenance_window              = "Mon:00:00-Mon:03:00"
+  # backup_window                   = "03:00-06:00"
+  # enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+
+  apply_immediately       = true
   backup_retention_period = 1
+  deletion_protection     = false
+  multi_az                = true
+  publicly_accessible     = false
+  skip_final_snapshot     = true
+  storage_encrypted       = false
 }
 
 resource "aws_db_instance" "replica" {
   identifier     = "${var.db_name}-replica"
   instance_class = var.db_instance_class
+  port           = var.db_port
+  allocated_storage     = var.db_allocated_storage
+  max_allocated_storage = var.db_max_allocated_storage
 
-  replicate_source_db    = aws_db_instance.master.identifier
-  multi_az = true
-  apply_immediately      = true
-  publicly_accessible    = false
-  skip_final_snapshot    = true
-  vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.db_pg.name
+  replicate_source_db    = aws_db_instance.master.identifier
+  vpc_security_group_ids = [aws_security_group.rds.id]
+
+  # maintenance_window              = "Mon:00:00-Mon:03:00"
+  # backup_window                   = "03:00-06:00"
+  # enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+
+  apply_immediately       = true
+  backup_retention_period = 0
+  deletion_protection     = false
+  multi_az                = false
+  publicly_accessible     = false
+  skip_final_snapshot     = true
+  storage_encrypted       = false
 }
 
 resource "aws_db_parameter_group" "db_pg" {
@@ -50,8 +69,9 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 }
 
 resource "aws_security_group" "rds" {
-  name   = "${var.db_name}-rds"
-  vpc_id = var.db_vpc_id
+  name        = "${var.db_name}-rds"
+  vpc_id      = var.db_vpc_id
+  description = "PostgreSQL security group with multi-AZ replica"
 
   ingress {
     from_port   = var.db_port

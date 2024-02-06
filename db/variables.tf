@@ -1,13 +1,11 @@
 variable "db_family" {
   description = "The name of db"
   type        = string
-  default     = "postgres14"
 }
 
 variable "db_port" {
   description = "The port number of db"
   type        = number
-  default     = 5432
 }
 
 variable "db_vpc_id" {
@@ -49,7 +47,6 @@ variable "db_password" {
   description = "The name of db user"
   type        = string
   sensitive   = true
-  default     = "test1234"
 }
 
 variable "db_allocated_storage" {
