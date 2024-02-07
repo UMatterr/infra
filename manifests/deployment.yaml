@@ -19,6 +19,9 @@ spec:
       containers:
       - image: 767397926607.dkr.ecr.ap-northeast-2.amazonaws.com/umatter:latest
         name: django
+        envFrom:
+        - configMapRef:
+            name: django-config
         ports:
         - containerPort: 80
           name: django

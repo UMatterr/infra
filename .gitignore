@@ -38,3 +38,4 @@ terraform.rc
 # extra
 *.lock.*
 umatter-key*
+configmap.yaml
