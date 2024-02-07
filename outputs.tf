@@ -43,6 +43,6 @@ output "eks_cluster_cert" {
 }
 
 output "rds_host" {
-  value = module.db.rds_hostname
+  value     = module.db.rds_hostname
   sensitive = true
 }

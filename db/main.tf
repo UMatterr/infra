@@ -26,9 +26,9 @@ resource "aws_db_instance" "master" {
 }
 
 resource "aws_db_instance" "replica" {
-  identifier     = "${var.db_name}-replica"
-  instance_class = var.db_instance_class
-  port           = var.db_port
+  identifier            = "${var.db_name}-replica"
+  instance_class        = var.db_instance_class
+  port                  = var.db_port
   allocated_storage     = var.db_allocated_storage
   max_allocated_storage = var.db_max_allocated_storage
 
