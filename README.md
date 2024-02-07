@@ -11,7 +11,7 @@
         * user-data: setup-linux.sh
 * Terraform cloud account
 * AWS access key and AWS secret key
-* an AWS region you prefer
+* an AWS region you prefer (in the repository, used ap-northeast-2)
 
 ## Set up a EKS cluster
 ```bash
