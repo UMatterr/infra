@@ -86,6 +86,43 @@ eksctl version
 #################### eksctl settings ###################
 
 
+#################### docker settings ###################
+# Add Docker's official GPG key:
+sudo apt-get update && \
+
+sudo apt-get install ca-certificates curl && \
+
+sudo install -m 0755 -d /etc/apt/keyrings && \
+
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && \
+
+sudo chmod a+r /etc/apt/keyrings/docker.asc && \
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+
+sudo apt-get update && \
+
+sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
+
+# to use docker command as root user
+sudo usermod -aG docker $USER && \
+newgrp docker && \
+#################### docker settings ###################
+
+
+#################### Kompose settings ###################
+curl -L https://github.com/kubernetes/kompose/releases/download/v1.26.0/kompose-linux-amd64 -o kompose && \
+
+chmod +x kompose
+
+sudo mv ./kompose /usr/local/bin/kompose
+#################### Kompose settings ###################
+
+
 #################### git settings ###################
 git config --global user.name "dreampath88" && \
 git config --global user.email "dreampath88@gmail.com" && \
