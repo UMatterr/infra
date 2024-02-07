@@ -16,8 +16,8 @@ if [[ $(kubectl config current-context) -ne 0 ]] || \
 fi
 echo "The current context of the local machine: $(kubectl config current-context)"
 
-# if ! kubectl get namespace final > /dev/null 2>&1; then
-#     echo "Creating namespace final"
-#     kubectl create ns final
-# fi
-# kubectl apply -k ./manifests
+if ! kubectl get namespace final > /dev/null 2>&1; then
+    echo "Creating namespace final"
+    kubectl create ns final
+fi
+kubectl apply -f ./manifests

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+  namespace: final
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: django
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: django
+        tier: backend
+    spec:
+      containers:
+      - image: 767397926607.dkr.ecr.ap-northeast-2.amazonaws.com/umatter:latest
+        name: django
+        ports:
+        - containerPort: 80
+          name: django
+        resources:
+          requests:
+            cpu: 100m
+            memory: 500Mi
+          limits:
+            cpu: 200m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            httpHeaders:
+            - name: Custom-Header
+              value: Awesome
+          initialDelaySeconds: 3
+          periodSeconds: 3
