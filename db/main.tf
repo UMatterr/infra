@@ -1,4 +1,5 @@
 resource "aws_db_instance" "master" {
+  db_name               = var.db_name
   identifier            = "${var.db_name}-master"
   instance_class        = var.db_instance_class
   engine                = var.db_engine
