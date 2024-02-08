@@ -16,3 +16,4 @@ spec:
     app: django
     tier: backend
   type: LoadBalancer
+  # type: NodePort
