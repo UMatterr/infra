@@ -17,8 +17,6 @@ spec:
         tier: backend
     spec:
       containers:
-      # - name: nginx
-      #   image: nginx
       - name: django
         image: 767397926607.dkr.ecr.ap-northeast-2.amazonaws.com/umatter:latest
         envFrom:
@@ -27,7 +25,7 @@ spec:
         ports:
         - name: django
           containerPort: 8000
-        args: ["gunicorn --bind 0.0.0.0:8000 --workers 4 --threads 4 --timeout 60 --log-level=info --log-file=- umatter.wsgi:application"]
+        args: ["gunicorn --bind localhost:8000 --workers 4 --threads 4 --timeout 60 --log-level=info umatter.wsgi:application"]
         #   requests:
         #     cpu: 100m
         #     memory: 500Mi
