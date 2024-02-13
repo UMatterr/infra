@@ -15,5 +15,4 @@ spec:
   selector:
     app: django
     tier: backend
-  type: LoadBalancer
-  # type: NodePort
+  type: ClusterIP
