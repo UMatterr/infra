@@ -69,15 +69,6 @@ module "vpc" {
   }
 }
 
-# module "bastion" {
-#   source = "./bastion"
-
-#   vpc_id            = module.vpc.vpc_id
-#   bastion_subnet_id = module.vpc.public_subnets[0]
-#   public_key_path   = var.public_key_path
-#   user_data_path    = var.user_data_path
-# }
-
 module "db" {
   source = "./db"
 

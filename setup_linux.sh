@@ -114,19 +114,10 @@ newgrp docker && \
 #################### docker settings ###################
 
 
-#################### Kompose settings ###################
-curl -L https://github.com/kubernetes/kompose/releases/download/v1.26.0/kompose-linux-amd64 -o kompose && \
-
-chmod +x kompose
-
-sudo mv ./kompose /usr/local/bin/kompose
-#################### Kompose settings ###################
-
-
-#################### git settings ###################
-git config --global user.name "dreampath88" && \
-git config --global user.email "dreampath88@gmail.com" && \
-
-git clone https://github.com/UMatterr/server.git && \
-git clone https://github.com/UMatterr/infra.git
-#################### git settings ###################
+#################### AWS ECR settings ###################
+aws ecr get-login-password \
+    --region ap-northeast-2 | \
+    docker login \
+    --username AWS \
+    --password-stdin 767397926607.dkr.ecr.ap-northeast-2.amazonaws.com
+#################### AWS ECR settings ###################
