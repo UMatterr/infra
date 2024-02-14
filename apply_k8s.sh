@@ -1,8 +1,6 @@
 #!/bin/bash
 current_context=$(kubectl config current-context) && \
 terraform_cluster_arn=$(terraform output -raw cluster_arn) && \
-echo $current_context
-echo $terraform_cluster_arn
 
 # if the current context of the local ~/.kube/config is not configured
 # or the current context is not identical with the Terraform cluster arn,
@@ -30,15 +28,16 @@ kubectl apply -f ./manifests/ingress.yaml && \
 
 # Update alb url
 url=$(kubectl get ing django-alb -n final | tail -n 1 | awk -F' ' '{printf $4}')
-while [ -z "${url}" ]; do
+while [ -z "${url}" ] || [ "${url}" == "80" ]; do
     echo Not found alb url
     kubectl describe ing django-alb -n final
-    exit 1
+    sleep 5
+    url=$(kubectl get ing django-alb -n final | tail -n 1 | awk -F' ' '{printf $4}')
 done
-echo Update the alb ulr: $url
+echo Update the alb url: $url
 
 sed -E -i.bak1 "s|DJANGO_BASE_URL: http://[0-9a-zA-Z\.-]+|DJANGO_BASE_URL: http://${url}|g" ./manifests/configmap.yaml && \
-sed -E -i.bak2 "s|DJANGO_ALLOWED_HOSTS: https://d11k7zd8ekz887.cloudfront.net http://[0-9a-zA-Z\.-]+|DJANGO_ALLOWED_HOSTS: https://d11k7zd8ekz887.cloudfront.net http://${url}|g" ./manifests/configmap.yaml && \
+# sed -E -i.bak2 "s|DJANGO_ALLOWED_HOSTS: https://d11k7zd8ekz887.cloudfront.net http://[0-9a-zA-Z\.-]+|DJANGO_ALLOWED_HOSTS: https://d11k7zd8ekz887.cloudfront.net http://${url}|g" ./manifests/configmap.yaml && \
 
 mv -v manifests/*.yaml.bak* tmp/ && \
 

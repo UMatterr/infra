@@ -18,8 +18,6 @@ spec:
         tier: backend
     spec:
       containers:
-      # - name: nginx
-      #   image: nginx:latest
       - name: django
         image: 767397926607.dkr.ecr.ap-northeast-2.amazonaws.com/umatter:latest
         envFrom:
@@ -28,18 +26,20 @@ spec:
         ports:
         - name: gunicorn
           containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+        # resources:
         #   requests:
         #     cpu: 100m
-        #     memory: 500Mi
+        #     memory: 400Mi
         #   limits:
         #     cpu: 200m
-        #     memory: 1Gi
-        # livenessProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 80
-        #     httpHeaders:
-        #     - name: Custom-Header
-        #       value: Awesome
-        #   initialDelaySeconds: 3
-        #   periodSeconds: 3
+        #     memory: 800Mi
+      # - name: nginx
+      #   image: nginx:latest
