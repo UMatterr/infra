@@ -1,18 +1,10 @@
 #!/bin/bash
-# It works in bash < 4.0.0
-declare -a check_list
-
-data="cluster_arn|$(terraform output -raw cluster_arn)"
-
-IFS=' ' read -ra check_list <<< "$data"
-
-for item in "${check_list[@]}"; do
-    IFS='|' read -ra item <<< "$item"
-    if [ -z "${item[1]}" ]; then
-      echo "${item[0]} is empty"
-      exit 1
-    fi
-done
+# Find the cluster arn
+cluster_arn=$(terraform output -raw cluster_arn)
+if [ -z "${cluster_arn}" ]; then
+	echo "cluster arn is empty"
+	exit 1
+fi
 
 # Remove the namespace and all the resources
 kubectl delete ns final && \

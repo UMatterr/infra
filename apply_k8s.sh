@@ -1,15 +1,5 @@
 #!/bin/bash
-# Prepare a tfplan file
-terraform plan -out=umatter.tfplan && \
-count=$(ls .tfplan/ | wc -w) && \
-count=`expr $count + 1` && \
-cp umatter.tfplan .tfplan/umatter_v${count}.tfplan && \
-
-# Apply the new tfplan file
-terraform apply "umatter.tfplan" && \
-
-# Check the cluster arn after making the AWS EKS cluster
-terraform_cluster_arn=$(terraform output -raw cluster_arn) && \
+current_context=$(kubectl config current-context)
 
 # if the current context of the local ~/.kube/config is not configured
 # or the current context is not identical with the Terraform cluster arn,
@@ -26,15 +16,8 @@ if [[ $(kubectl config current-context) -ne 0 ]] || \
 fi
 echo "The current context of the local machine: $(kubectl config current-context)"
 
-# Create a new namespace if not exists
 if ! kubectl get namespace final > /dev/null 2>&1; then
     echo "Creating namespace final"
-    kubectl create ns final && \
+    kubectl create ns final
 fi
-
-# Apply k8s yaml files
-kubectl apply -f ./manifests && \
-
-# Install metric servers
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml && \
-kubectl get deployment metrics-server -n kube-system
+kubectl apply -f ./manifests
