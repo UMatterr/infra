@@ -9,13 +9,14 @@ cp umatter.tfplan .tfplan/umatter_v${count}.tfplan && \
 terraform apply "umatter.tfplan" && \
 
 # Check the cluster arn after making the AWS EKS cluster
+current_context=$(kubectl config current-context) && \
 terraform_cluster_arn=$(terraform output -raw cluster_arn) && \
 
 # if the current context of the local ~/.kube/config is not configured
 # or the current context is not identical with the Terraform cluster arn,
 # then update/switch the the cluster to the kubectl for the AWS EKS cluster
-if [[ $(kubectl config current-context) -ne 0 ]] || \
-    [[ $(kubectl config current-context) != $terraform_cluster_arn ]]; then
+if [ -z "${current_context}" ] || \
+    [ "${current_context}" != "${terraform_cluster_arn}" ]; then
     echo "Switching to cluster"
 
     aws eks update-kubeconfig \
