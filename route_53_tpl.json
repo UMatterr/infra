@@ -1,0 +1,17 @@
+{
+    "Comment": "Update the record for the ALB",
+    "Changes": [
+      {
+        "Action": "UPSERT",
+        "ResourceRecordSet": {
+          "Name": "api.umatter-goorm.net",
+          "Type": "A",
+          "AliasTarget": {
+            "HostedZoneId": "ALB_HOSTED_ZONE_ID",
+            "DNSName": "ALB_DOMAIN",
+            "EvaluateTargetHealth": true
+          }
+        }
+      }
+    ]
+  }
