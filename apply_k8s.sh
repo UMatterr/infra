@@ -19,7 +19,7 @@ echo "The current context of the local machine: $(kubectl config current-context
 
 if ! kubectl get namespace final > /dev/null 2>&1; then
     echo "Creating namespace final"
-    kubectl create ns final
+    kubectl create ns final && \
 fi
 
 # Apply k8s service and ingress yaml files

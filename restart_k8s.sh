@@ -2,7 +2,7 @@
 kubectl delete ns final && \
 
 current_context=$(kubectl config current-context) && \
-terraform_cluster_arn=$(terraform output -raw cluster_arn)
+terraform_cluster_arn=$(terraform output -raw cluster_arn) && \
 
 # if the current context of the local ~/.kube/config is not configured
 # or the current context is not identical with the Terraform cluster arn,
@@ -21,7 +21,7 @@ echo "The current context of the local machine: $(kubectl config current-context
 
 if ! kubectl get namespace final > /dev/null 2>&1; then
     echo "Creating namespace final"
-    kubectl create ns final
+    kubectl create ns final && \
 fi
 
 # Apply k8s service and ingress yaml files
@@ -36,7 +36,7 @@ while [ -z "${url}" ] || [ "${url}" == "80" ]; do
     sleep 5
     url=$(kubectl get ing django-alb -n final | tail -n 1 | awk -F' ' '{printf $4}')
 done
-echo Update the alb ulr: $url
+echo Update the alb url: $url
 
 sed -E -i.bak1 "s|DJANGO_BASE_URL: http://[0-9a-zA-Z\.-]+|DJANGO_BASE_URL: http://${url}|g" ./manifests/configmap.yaml && \
 # sed -E -i.bak2 "s|DJANGO_ALLOWED_HOSTS: https://d11k7zd8ekz887.cloudfront.net http://[0-9a-zA-Z\.-]+|DJANGO_ALLOWED_HOSTS: https://d11k7zd8ekz887.cloudfront.net http://${url}|g" ./manifests/configmap.yaml && \
