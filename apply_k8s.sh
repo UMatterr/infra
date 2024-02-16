@@ -46,13 +46,15 @@ mv -v manifests/*.yaml.bak* tmp/ && \
 kubectl apply -f ./manifests/configmap.yaml && \
 kubectl apply -f ./manifests/deployment.yaml
 
-# Copy the template json file for updating the Route 53 record value for the new ALB
-cp -v route_53_tpl.json route_53.json
-
 # Find the hosted zone IDs for ALB and Route 53
-hz_id=$(aws route53 list-hosted-zones | jq -r '.["HostedZones"][0]["Id"]')
+hz_id=$(aws route53 list-hosted-zones | \
+    jq -r '.["HostedZones"][0]["Id"]'
+)
 alb_name_id=$(echo ${url} | cut -d'-' -f3)
-alb_hz_id=$(aws elbv2 describe-load-balancers --names k8s-node1-${alb_name_id} | jq -r '.["LoadBalancers"][0]["CanonicalHostedZoneId"]')
+alb_hz_id=$(aws elbv2 describe-load-balancers \
+    --names k8s-node1-${alb_name_id} | \
+    jq -r '.["LoadBalancers"][0]["CanonicalHostedZoneId"]'
+)
 echo "Route 53 Hosted zone id: ${hz_id}"
 echo "ALB name id: ${alb_name_id}"
 echo "ALB Hosted zone id: ${alb_hz_id}"
@@ -63,9 +65,26 @@ if [ -z "${hz_id}" ] || \
     exit 1
 fi
 
+rt_url_raw=$(aws route53 list-resource-record-sets \
+    --hosted-zone-id ${hz_id} | \
+    jq -r '.ResourceRecordSets | .[] | select(.Name == "api.umatter-goorm.net.") | .AliasTarget.DNSName'
+)
+len_rt_url=${#rt_url_raw}
+rt_url=${rt_url_raw:0:len_rt_url-1}
+if [ "${rt_url}" != "${url}" ]; then
+    echo Update Route 53
+else
+    echo Pass
+    exit 0
+fi
+
+echo Start updating route 53
+# Copy the template json file for updating the Route 53 record value for the new ALB
+cp -v route_53_tpl.json route_53.json
+
 # Update the json file
-sed -E "s|ALB_HOSTED_ZONE_ID|${alb_hz_id}|g" ./route_53.json && \
-sed -E "s|ALB_DOMAIN|${url}|g" ./route_53.json && \
+sed -E -i'' "s|ALB_HOSTED_ZONE_ID|${alb_hz_id}|g" ./route_53.json && \
+sed -E -i'' "s|ALB_DOMAIN|${url}|g" ./route_53.json && \
 cat ./route_53.json
 
 # Update the Route 53 record

@@ -79,8 +79,8 @@ if [ -z "${hz_id}" ] || \
 fi
 
 # Update the json file
-sed -E "s|ALB_HOSTED_ZONE_ID|${alb_hz_id}|g" ./route_53.json && \
-sed -E "s|ALB_DOMAIN|${url}|g" ./route_53.json && \
+sed -E -i'' "s|ALB_HOSTED_ZONE_ID|${alb_hz_id}|g" ./route_53.json && \
+sed -E -i'' "s|ALB_DOMAIN|${url}|g" ./route_53.json && \
 cat ./route_53.json
 
 # Update the Route 53 record
