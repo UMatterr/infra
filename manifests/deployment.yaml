@@ -41,5 +41,3 @@ spec:
         #   limits:
         #     cpu: 200m
         #     memory: 800Mi
-      # - name: nginx
-      #   image: nginx:latest

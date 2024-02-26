@@ -44,7 +44,7 @@ resource "aws_db_instance" "replica" {
   apply_immediately       = true
   backup_retention_period = 0
   deletion_protection     = false
-  multi_az                = true
+  multi_az                = false
   publicly_accessible     = false
   skip_final_snapshot     = true
   storage_encrypted       = false

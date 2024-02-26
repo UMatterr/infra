@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl logs -n final $(kubectl get pod -n final | grep django | awk -F' ' '{printf $1}')
+kubectl logs -n final $(kubectl get pod -n final | grep Running | grep django | head -n 1 | awk -F' ' '{printf $1}')
