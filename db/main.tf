@@ -58,6 +58,11 @@ resource "aws_db_parameter_group" "db_pg" {
     name  = "log_connections"
     value = "1"
   }
+
+  parameter {
+    name  = "timezone"
+    value = "Asia/Seoul"
+  }
 }
 
 resource "aws_db_subnet_group" "db_subnet_group" {
