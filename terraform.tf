@@ -6,7 +6,7 @@ terraform {
   cloud {
     organization = "semi-project"
     workspaces {
-      name = "eks"
+      name = "umatter"
     }
   }
 
