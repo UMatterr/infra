@@ -17,8 +17,10 @@ data "aws_availability_zones" "available" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  region = "ap-northeast-2"
-  name   = "umatter"
+  region   = "ap-northeast-2"
+  name     = "umatter"
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr = "10.0.0.0/16"
 
   k8s_version  = "1.28"
   cluster_name = "umatter-${random_string.suffix.result}"
@@ -45,13 +47,21 @@ module "vpc" {
   version = "5.0.0"
 
   name = local.name
+  cidr = local.vpc_cidr
+  azs  = local.azs
 
-  cidr = "10.0.0.0/16"
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  private_subnets  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets   = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-  database_subnets = ["10.0.7.0/24", "10.0.8.0/24"]
+  private_subnets = [
+    # "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"
+    for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)
+  ]
+  public_subnets = [
+    # "10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"
+    for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 3)
+  ]
+  database_subnets = [
+    # "10.0.7.0/24", "10.0.8.0/24", "10.0.9.0/24",
+    for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 6)
+  ]
 
   enable_nat_gateway           = true
   single_nat_gateway           = true
@@ -110,20 +120,6 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    # default_node_group = {
-    #   # By default, the module creates a launch template to ensure tags are propagated to instances, etc.,
-    #   # so we need to disable it to use the default template provided by the AWS EKS managed node group service
-    #   use_custom_launch_template = false
-
-    #   disk_size = 50
-
-    #   # Remote access cannot be specified with a launch template
-    #   remote_access = {
-    #     ec2_ssh_key               = module.key_pair.key_pair_name
-    #     source_security_group_ids = [aws_security_group.remote_access.id]
-    #   }
-    # }
-
     one = {
       name = "node-1"
 

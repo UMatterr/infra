@@ -1,13 +1,13 @@
 #!/bin/bash
 
+# Apply terraform
+# ./tf_apply.sh
+
 # Check the cluster arn after making the AWS EKS cluster
 current_context=$(kubectl config current-context)
 terraform_cluster_arn=$(terraform output -raw cluster_arn)
 
 set -e
-
-# Apply terraform
-./tf_apply.sh
 
 # if the current context of the local ~/.kube/config is not configured
 # or the current context is not identical with the Terraform cluster arn,
@@ -49,9 +49,8 @@ sed -E -i.bak1 "s|DJANGO_BASE_URL: http://[0-9a-zA-Z\.-]+|DJANGO_BASE_URL: http:
 
 mv -v manifests/*.yaml.bak* tmp/
 
-# Apply configmap and deployment yaml files
-kubectl apply -f ./manifests/configmap.yaml
-kubectl apply -f ./manifests/deployment.yaml
+# Apply configmap and deployment and hpa yaml files
+kubectl apply -f ./manifests
 
 # Install metric servers
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
