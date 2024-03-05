@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Apply terraform
-# ./tf_apply.sh
+./tf_apply.sh
 
 # Check the cluster arn after making the AWS EKS cluster
 current_context=$(kubectl config current-context)
