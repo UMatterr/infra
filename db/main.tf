@@ -62,7 +62,7 @@ resource "aws_db_parameter_group" "db_pg" {
   }
 
   parameter {
-    name  = "default_isolation_level"
+    name  = "default_transaction_isolation"
     value = "repeatable read"
   }
 }
