@@ -51,15 +51,12 @@ module "vpc" {
   azs  = local.azs
 
   private_subnets = [
-    # "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"
     for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)
   ]
   public_subnets = [
-    # "10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"
     for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 3)
   ]
   database_subnets = [
-    # "10.0.7.0/24", "10.0.8.0/24", "10.0.9.0/24",
     for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 6)
   ]
 
@@ -129,16 +126,6 @@ module "eks" {
       max_size     = 3
       desired_size = 1
     }
-
-    # two = {
-    #   name = "node-group-2"
-
-    #   instance_types = ["t3.medium"]
-
-    #   min_size     = 1
-    #   max_size     = 3
-    #   desired_size = 1
-    # }
   }
 }
 
