@@ -57,11 +57,6 @@ resource "aws_db_parameter_group" "db_pg" {
   }
 
   parameter {
-    name  = "log_timezone"
-    value = "Asia/Seoul"
-  }
-
-  parameter {
     name  = "default_transaction_isolation"
     value = "repeatable read"
   }
