@@ -59,17 +59,27 @@ module "bastion-sg" {
   vpc_id  = module.vpc.vpc_id
 }
 
+resource "aws_key_pair" "bastion-key" {
+  key_name   = "bastion-key"
+  public_key = file(var.public_key_path)
+}
+
 resource "aws_instance" "my_instance" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = local.instance_type
   subnet_id                   = module.vpc.subnet_ids[0]
   vpc_security_group_ids      = [module.bastion-sg.sg_id]
   associate_public_ip_address = true
+  key_name                    = aws_key_pair.bastion-key.key_name
 
   user_data = file(var.user_data_path)
 
   root_block_device {
     volume_size = 20
+  }
+
+  metadata_options {
+    http_tokens = "required"
   }
 
   tags = {

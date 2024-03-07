@@ -3,6 +3,7 @@
 output "ec2" {
   description = "bastion public DNS"
   value       = aws_instance.my_instance
+  sensitive   = true
 }
 
 output "public_dns" {
