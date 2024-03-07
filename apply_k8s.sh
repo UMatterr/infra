@@ -91,7 +91,7 @@ fi
 
 echo Start updating route 53
 # Copy the template json file for updating the Route 53 record value for the new ALB
-cp -v route_53_tpl.json route_53.json
+cp -v ./config_templates/route_53_tpl.json ./route_53.json
 
 # Update the json file
 sed -E -i'' \
@@ -104,3 +104,5 @@ cat ./route_53.json
 aws route53 change-resource-record-sets \
     --hosted-zone-id ${hz_id} \
     --change-batch file://./route_53.json
+
+rm -v ./route_53.json
