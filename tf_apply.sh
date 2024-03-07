@@ -6,6 +6,9 @@ if [ -z "$(echo $TF_VAR_db_password)" ]; then
     exit 1
 fi
 
+cd terraform
+echo Current folder: $(pwd)
+
 if ls -d .tfplan; then
     echo .tfplan folder exists
 else
@@ -31,5 +34,8 @@ count=$(ls .tfplan/ | wc -w)
 count=`expr $count + 1`
 cp -v umatter.tfplan .tfplan/umatter_v${count}.tfplan
 
-# Apply the new tfplan file
+# # Apply the new tfplan file
 terraform apply "umatter.tfplan"
+
+cd ~/infra
+echo Current folder: $(pwd)
