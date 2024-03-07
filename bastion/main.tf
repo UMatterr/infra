@@ -45,13 +45,11 @@ locals {
 module "vpc" {
   source = "./modules/vpc"
 
-  az_list = local.azs
-  region  = local.region
-  subnet_cidrs = [
-    for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)
-  ]
-  vpc_cidr = local.vpc_cidr
-  vpc_name = local.name
+  az_list      = local.azs
+  region       = local.region
+  subnet_cidrs = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  vpc_cidr     = local.vpc_cidr
+  vpc_name     = local.name
 }
 
 module "bastion-sg" {
@@ -62,15 +60,17 @@ module "bastion-sg" {
 }
 
 resource "aws_instance" "my_instance" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = local.instance_type
-  subnet_id     = module.vpc.subnet_ids[0]
-  vpc_security_group_ids = [
-    module.bastion-sg.sg_id
-  ]
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = local.instance_type
+  subnet_id                   = module.vpc.subnet_ids[0]
+  vpc_security_group_ids      = [module.bastion-sg.sg_id]
   associate_public_ip_address = true
 
   user_data = file(var.user_data_path)
+
+  root_block_device {
+    volume_size = 20
+  }
 
   tags = {
     Name = "${local.name}"

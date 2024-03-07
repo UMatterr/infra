@@ -1,11 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
-output "azs" {
-  description = "AZ list"
-  value       = local.azs
+output "ec2" {
+  description = "bastion public DNS"
+  value       = aws_instance.my_instance
 }
 
-output "ami" {
-  description = "Filtered ami ids"
-  value       = data.aws_ami.ubuntu
+output "public_dns" {
+  description = "bastion public DNS"
+  value       = aws_instance.my_instance.public_dns
 }
