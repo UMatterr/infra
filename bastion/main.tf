@@ -15,29 +15,64 @@ data "aws_availability_zones" "available" {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+}
+
 locals {
-  region   = "ap-northeast-2"
-  name     = "bastion"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-  vpc_cidr = "10.1.0.0/16"
+  region        = "ap-northeast-2"
+  name          = "bastion"
+  azs           = slice(data.aws_availability_zones.available.names, 0, 4)
+  vpc_cidr      = "10.1.0.0/16"
+  instance_type = "t3.medium"
 }
 
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.0.0"
+  source = "./modules/vpc"
 
-  name = local.name
-  cidr = local.vpc_cidr
-  azs  = local.azs
-
-  private_subnets = [
+  az_list = local.azs
+  region  = local.region
+  subnet_cidrs = [
     for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)
   ]
-  public_subnets = [
-    for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 3)
-  ]
+  vpc_cidr = local.vpc_cidr
+  vpc_name = local.name
+}
 
-  enable_nat_gateway           = true
-  single_nat_gateway           = true
-  enable_dns_hostnames         = true
+module "bastion-sg" {
+  source = "./modules/sg"
+
+  sg_name = local.name
+  vpc_id  = module.vpc.vpc_id
+}
+
+resource "aws_instance" "my_instance" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = local.instance_type
+  subnet_id     = module.vpc.subnet_ids[0]
+  vpc_security_group_ids = [
+    module.bastion-sg.sg_id
+  ]
+  associate_public_ip_address = true
+
+  user_data = file(var.user_data_path)
+
+  tags = {
+    Name = "${local.name}"
+  }
 }
