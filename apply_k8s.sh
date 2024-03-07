@@ -44,8 +44,9 @@ sed -E -i.bak1 "s|DJANGO_BASE_URL: http://[0-9a-zA-Z\.-]+|DJANGO_BASE_URL: http:
 mv -v manifests/*.yaml.bak* tmp/
 
 # Apply configmap and deployment yaml files
-kubectl apply -f ./manifests/configmap.yaml
-kubectl apply -f ./manifests/deployment.yaml
+# kubectl apply -f ./manifests/configmap.yaml
+# kubectl apply -f ./manifests/deployment.yaml
+kubectl apply -f ./manifests/
 
 # Find the hosted zone IDs for ALB and Route 53
 hz_id=$(aws route53 list-hosted-zones | \

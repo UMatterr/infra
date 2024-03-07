@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+  namespace: final
+data:
+  DJANGO_DEBUG: "false"
+  DJANGO_ALLOWED_HOSTS: "*"
+  DJANGO_ACCESS_CONTROL_ALLOW_HEADERS: ""
+  DJANGO_ACCESS_CONTROL_ALLOW_METHODS: ""
+  DJANGO_CORS_ORIGIN_WHITELIST: https://web.umatter-goorm.net http://web.umatter-goorm.net  # customize
+  DJANGO_CORS_ORIGIN_ALLOW_ALL: "false"
+  DJANGO_CORS_ALLOW_CREDENTIALS: "true"
+  DJANGO_CSRF_TRUSTED_ORIGINS: https://web.umatter-goorm.net http://web.umatter-goorm.net  # customize
+  DJANGO_CSRF_COOKIE_HTTPONLY: "true"
+  DJANGO_CSRF_USE_SESSIONS: "true"
+  DJANGO_SESSION_COOKIE_HTTPONLY: "true"
+  DJANGO_SECURE_CROSS_ORIGIN_OPENER_POLICY: unsafe-none
+  DJANGO_SESSION_COOKIE_DOMAIN: "umatter-goorm.net"  # customize
+  DJANGO_SESSION_COOKIE_SAMESITE: None
+  DJANGO_SESSION_COOKIE_SECURE: "true"
+  DJANGO_BASE_URL: https://api.umatter-goorm.net  # customize
+  DJANGO_CLIENT_BASE_URL: https://web.umatter-goorm.net  # customize
+  DJANGO_LOG_LEVEL: INFO
+  DJANGO_TIMEZONE: Asia/Seoul
+  DJANGO_USE_REPLICA_DATABASE: "true"
+  NLP_API_HOST: http://54.252.148.72  # customize

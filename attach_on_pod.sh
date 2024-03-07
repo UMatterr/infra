@@ -1,4 +1,24 @@
 #!/bin/bash
 set -e
 
-kubectl exec -it -n final $(kubectl get pod -n final | grep django | awk -F' ' '{printf $1}') -- bash
+idx=$1
+if [ -z "${idx}" ]; then
+    echo Any index is not given. use a default value 1;
+    idx=1
+fi
+
+pods=$(kubectl get pod -n final | \
+        grep Running | \
+        grep django | \
+        wc -l)
+if [ $pods -lt $idx ]; then
+    echo Invalid index ${idx};
+    exit 1
+fi
+
+kubectl exec -it -n final \
+    $(kubectl get pod -n final | \
+        grep django | \
+        sed -n ${idx}p | \
+        awk -F' ' '{printf $1}') \
+    -- bash

@@ -23,6 +23,8 @@ spec:
         envFrom:
         - configMapRef:
             name: django-config
+        - secretRef:
+            name: django-secret
         ports:
         - name: gunicorn
           containerPort: 8000
