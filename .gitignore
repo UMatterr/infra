@@ -37,6 +37,7 @@ override.tf.json
 terraform.rc
 
 # extra
+.env*
 *.lock.*
 umatter-key*
 configmap*.yaml*
