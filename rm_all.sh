@@ -24,6 +24,3 @@ kubectl config delete-user ${cluster_arn}
 
 # Destroy the Terraform resources from AWS
 terraform destroy -auto-approve
-
-cd -
-echo Current folder: $(pwd)
