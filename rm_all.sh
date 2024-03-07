@@ -2,8 +2,11 @@
 set -e
 
 # Find the cluster arn
+cd terraform
+echo Current folder: $(pwd)
 cluster_arn=$(terraform output -raw cluster_arn)
-if [ -z "${cluster_arn}" ]; then
+if [ -z "${cluster_arn}" ] || \
+	grep -q 'No outputs' <<< ${cluster_arn} ; then
 	echo "cluster arn is empty"
 	exit 1
 fi
@@ -21,3 +24,6 @@ kubectl config delete-user ${cluster_arn}
 
 # Destroy the Terraform resources from AWS
 terraform destroy -auto-approve
+
+cd -
+echo Current folder: $(pwd)
