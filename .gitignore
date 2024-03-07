@@ -40,6 +40,6 @@ terraform.rc
 .env*
 *.lock.*
 umatter-key*
-secret*.yaml
+secret.yaml
 tmp/
 route_53.json
