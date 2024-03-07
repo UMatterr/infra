@@ -6,6 +6,18 @@ if [ -z "$(echo $TF_VAR_db_password)" ]; then
     exit 1
 fi
 
+if ls -d .tfplan; then
+    echo .tfplan folder exists
+else
+    mkdir .tfplan
+fi
+
+if ls -d tmp; then
+    echo tmp folder exists
+else
+    mkdir tmp
+fi
+
 # Initialize terraform
 terraform init
 

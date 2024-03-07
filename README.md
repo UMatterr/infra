@@ -4,7 +4,7 @@
 * a EC2 instance
     - make an AWS EC2 instance as you need
     - The instance created in this repository is using:
-        * t2.small
+        * t2.medium
         * ubuntu 20.04
         * gp2 20 GiB
         * security group for port 22
@@ -30,12 +30,9 @@ terraform login
 # After executing the command, enter the AWS access key and AWS secret key etc.
 aws configure
 
+# Set up env for terraform secret
+export TF_VAR_db_password=custompassword
+
 # Initialize terraform
-terraform init
-
-# Check the plan and save a output file with a customized file name
-terraform plan -out=plan_v1.tfplan
-
-# Apply the plan
-terraform apply "plan_v1.tfplan"
+./tf_apply.sh
 ```
