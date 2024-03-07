@@ -9,16 +9,16 @@ fi
 cd terraform
 echo Current folder: $(pwd)
 
-if ls -d .tfplan; then
-    echo .tfplan folder exists
-else
+if $(ls -d .tfplan/) > /dev/null 2>&1; then
     mkdir .tfplan
+else
+    echo .tfplan folder exists
 fi
 
-if ls -d tmp; then
-    echo tmp folder exists
-else
+if $(ls -d tmp/) > /dev/null 2>&1; then
     mkdir tmp
+else
+    echo tmp folder exists
 fi
 
 # Initialize terraform

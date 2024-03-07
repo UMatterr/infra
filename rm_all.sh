@@ -9,7 +9,7 @@ if [ -z "${cluster_arn}" ]; then
 fi
 
 # Remove the namespace and all the resources
-kubectl delete ns final
+kubectl delete ns final argocd
 
 # Remove the AWS EKS cluster info from the kubeconfig file
 kubectl config unset current-context
