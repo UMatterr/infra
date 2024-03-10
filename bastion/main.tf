@@ -45,7 +45,7 @@ locals {
 module "ecr" {
   source = "./modules/ecr"
 
-  ecr_name       = local.name
+  ecr_name       = "umatter"
   ecr_mutability = "MUTABLE"
 }
 

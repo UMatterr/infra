@@ -125,6 +125,16 @@ minikube version
 
 
 #################### AWS ECR settings ###################
+mkdir src
+cd src
+git clone https://github.com/UMatterr/admin
+git clone https://github.com/UMatterr/infra
+git clone https://github.com/UMatterr/server
+cd ~
+#################### AWS ECR settings ###################
+
+
+#################### AWS ECR settings ###################
 # aws ecr get-login-password \
 #     --region ap-northeast-2 | \
 #     docker login \
