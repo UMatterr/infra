@@ -4,13 +4,13 @@ set -e
 if ls -d .tfplan/ > /dev/null 2>&1; then
     echo .tfplan folder exists
 else
-    mkdir .tfplan
+    echo Make $(mkdir -v .tfplan) folder
 fi
 
 if ls -d tmp/ > /dev/null 2>&1; then
     echo tmp folder exists
 else
-    mkdir tmp
+    echo Make $(mkdir -v tmp) folder
 fi
 
 # Initialize terraform

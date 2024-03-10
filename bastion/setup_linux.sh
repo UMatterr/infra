@@ -119,19 +119,16 @@ newgrp docker
 #################### minikube settings ###################
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
-rm minikube-linux-amd64
 minikube version
+rm minikube-linux-amd64
 #################### minikube settings ###################
 
 
-#################### AWS ECR settings ###################
-mkdir src
-cd src
-git clone https://github.com/UMatterr/admin
-git clone https://github.com/UMatterr/infra
-git clone https://github.com/UMatterr/server
-cd ~
-#################### AWS ECR settings ###################
+#################### Git Repository settings ###################
+# git clone https://github.com/UMatterr/admin
+# git clone https://github.com/UMatterr/infra
+# git clone https://github.com/UMatterr/server
+#################### Git Repository settings ###################
 
 
 #################### AWS ECR settings ###################

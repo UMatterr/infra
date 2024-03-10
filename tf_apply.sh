@@ -14,16 +14,18 @@ fi
 cd terraform
 echo Current folder: $(pwd)
 
-if $(ls -d .tfplan/) > /dev/null 2>&1; then
-    mkdir .tfplan
-else
+if ls -d .tfplan/ > /dev/null 2>&1; then
     echo .tfplan folder exists
+else
+    echo Make .tfplan folder
+    mkdir -v .tfplan
 fi
 
-if $(ls -d tmp/) > /dev/null 2>&1; then
-    mkdir tmp
-else
+if ls -d tmp/ > /dev/null 2>&1; then
     echo tmp folder exists
+else
+    echo Make tmp folder
+    mkdir -v tmp
 fi
 
 # Initialize terraform
@@ -42,5 +44,5 @@ cp -v umatter.tfplan .tfplan/umatter_v${count}.tfplan
 # # Apply the new tfplan file
 terraform apply "umatter.tfplan"
 
-cd ~/infra
+cd ..
 echo Current folder: $(pwd)

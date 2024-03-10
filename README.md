@@ -30,8 +30,11 @@ terraform login
 # After executing the command, enter the AWS access key and AWS secret key etc.
 aws configure
 
-# Set up env for terraform secret
-export TF_VAR_db_password=custompassword
+# Set up enviroment variables in the bastion host
+# Please prepare env.json file before run the sh file
+cd bastion
+./export_bashrc.sh
+cd ..
 
 # Initialize terraform
 ./tf_apply.sh
