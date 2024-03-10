@@ -38,6 +38,8 @@ terraform.rc
 
 # extra
 .env*
+env*
+!env_tpl.json
 *.lock.*
 umatter-key*
 secret.yaml
