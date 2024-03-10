@@ -14,7 +14,7 @@ output "bastion_public_dns" {
 output "ecr" {
   description = "The Info of AWS ECR private repository"
   value       = module.ecr.ecr
-  sensitive = true
+  sensitive   = true
 }
 
 output "ecr_host" {
