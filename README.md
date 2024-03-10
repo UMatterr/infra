@@ -40,7 +40,7 @@ export TF_VAR_db_password=custompassword
 ## Apply k8s in EKS
 All the k8s yaml files are in `manifests` folder, but you should create a `secret.yaml` in the `manifests` folder
 ```yaml
-# Please update secret_tpl.yaml and renmae it as secret_tpl.yaml
+# Please update secret_tpl.yaml and renmae it as secret.yaml and save the file into manifests folder
 apiVersion: v1
 kind: Secret
 metadata:
