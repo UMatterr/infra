@@ -34,7 +34,7 @@ locals {
   db_major_engine_version  = "14"         # DB option group
   db_instance_class        = "db.t4g.large"
   db_allocated_storage     = 1
-  db_max_allocated_storage = 10
+  db_max_allocated_storage = 20
 }
 
 resource "random_string" "suffix" {
