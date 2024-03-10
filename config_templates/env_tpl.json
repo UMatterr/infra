@@ -3,6 +3,7 @@
     "AWS_SECRET_KEY": "<AWS_SECRET_KEY>",
     "AWS_REGION": "<AWS_REGION>",
     "AWS_ECR_HOST": "<AWS_ECR_HOST>",
+    "AWS_ECR_REPO_URL": "<AWS_ECR_REPO_URL>",
     "TF_VAR_LOGIN": "<TF_VAR_LOGIN>",
     "TF_VAR_db_username": "<TF_VAR_db_username>",
     "TF_VAR_db_password": "<TF_VAR_db_password>",
