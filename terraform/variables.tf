@@ -1,5 +1,11 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
+variable "db_username" {
+  description = "A username for RDS"
+  type        = string
+  sensitive   = true
+}
+
 variable "db_password" {
   description = "A password for RDS"
   type        = string

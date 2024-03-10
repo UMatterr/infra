@@ -116,10 +116,18 @@ newgrp docker
 #################### docker settings ###################
 
 
+#################### minikube settings ###################
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+rm minikube-linux-amd64
+minikube version
+#################### minikube settings ###################
+
+
 #################### AWS ECR settings ###################
-aws ecr get-login-password \
-    --region ap-northeast-2 | \
-    docker login \
-    --username AWS \
-    --password-stdin 767397926607.dkr.ecr.ap-northeast-2.amazonaws.com
+# aws ecr get-login-password \
+#     --region ap-northeast-2 | \
+#     docker login \
+#     --username AWS \
+#     --password-stdin <AWS_ECR_HOST>
 #################### AWS ECR settings ###################

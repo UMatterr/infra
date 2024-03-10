@@ -42,6 +42,13 @@ locals {
   instance_type = "t3.medium"
 }
 
+module "ecr" {
+  source = "./modules/ecr"
+
+  ecr_name       = local.name
+  ecr_mutability = "MUTABLE"
+}
+
 module "vpc" {
   source = "./modules/vpc"
 
@@ -65,6 +72,8 @@ resource "aws_key_pair" "bastion-key" {
 }
 
 resource "aws_instance" "my_instance" {
+  depends_on = [module.ecr]
+
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = local.instance_type
   subnet_id                   = module.vpc.subnet_ids[0]

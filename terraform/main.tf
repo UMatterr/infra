@@ -25,7 +25,7 @@ locals {
   k8s_version  = "1.28"
   cluster_name = "umatter-${random_string.suffix.result}"
 
-  db_username              = "umatter"
+  db_username              = var.db_username
   db_paasword              = var.db_password
   db_port                  = 5432
   db_engine                = "postgres"
@@ -34,7 +34,7 @@ locals {
   db_major_engine_version  = "14"         # DB option group
   db_instance_class        = "db.t4g.large"
   db_allocated_storage     = 1
-  db_max_allocated_storage = 20
+  db_max_allocated_storage = 10
 }
 
 resource "random_string" "suffix" {

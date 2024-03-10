@@ -3,7 +3,7 @@
 variable "public_key_path" {
   description = "The path of the public key"
   type        = string
-  default     = "./umatter-key.pub"
+  default     = "../config/umatter-key.pub"
   sensitive   = true
 }
 

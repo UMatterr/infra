@@ -6,6 +6,11 @@ if [ -z "$(echo $TF_VAR_db_password)" ]; then
     exit 1
 fi
 
+if [ -z "$(echo $TF_VAR_db_username)" ]; then
+    echo Please set the db username
+    exit 1
+fi
+
 cd terraform
 echo Current folder: $(pwd)
 
